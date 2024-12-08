@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Image Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300">
+
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8 underline decoration-wavy decoration-indigo-500">
+            Interactive Image Gallery
+        </h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Images will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden">
+        <div class="relative max-w-screen-lg w-full p-4">
+            <!-- Close Button -->
+            <button id="closeModal" class="absolute top-4 right-4 text-white text-xl">&times;</button>
+
+            <!-- Displayed Image -->
+            <img id="modalImage" src="" alt="Gallery Image" class="object-contain w-full max-h-screen rounded-lg">
+
+            <!-- Navigation Buttons -->
+            <div class="absolute inset-y-0 left-4 flex items-center">
+                <button id="prevImage" class="text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full">
+                    &#10094; <!-- Left arrow -->
+                </button>
+            </div>
+            <div class="absolute inset-y-0 right-4 flex items-center">
+                <button id="nextImage" class="text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full">
+                    &#10095; <!-- Right arrow -->
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample image URLs and titles
+        const images = [
+            { url: 'assets/download (6).jpeg', title: 'Rock Formation' },
+            { url: 'assets/50-504210_cartoon-rock-png-transparent-png.png', title: 'Cartoon Rock' },
+            { url: 'assets/50-504210_cartoon-rock-png-transparent-png-removebg-preview.png', title: 'Transparent Rock' },
+            { url: 'assets/download (5).jpeg', title: 'Nature Scene' },
+            { url: 'assets/download__5_-removebg-preview.png', title: 'Cartoon Nature' },
+            { url: 'assets/download__6_-removebg-preview.png', title: 'Animated Forest' },
+        ];
+
+        const galleryContainer = document.querySelector('.grid');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalButton = document.getElementById('closeModal');
+        const prevImageButton = document.getElementById('prevImage');
+        const nextImageButton = document.getElementById('nextImage');
+
+        let currentIndex = 0;
+
+        // Dynamically add images to the gallery
+        images.forEach((image, index) => {
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'relative group overflow-hidden rounded-lg shadow-lg hover:shadow-2xl cursor-pointer';
+
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = image.title;
+            img.className = 'object-cover w-full h-full transition-transform duration-300 transform group-hover:scale-110';
+
+            imgWrapper.appendChild(img);
+            galleryContainer.appendChild(imgWrapper);
+
+            // Add click event to open modal
+            imgWrapper.addEventListener('click', () => {
+                currentIndex = index;
+                openModal();
+            });
+        });
+
+        // Open modal and display selected image
+        function openModal() {
+            modalImage.src = images[currentIndex].url;
+            modal.classList.remove('hidden');
+        }
+
+        // Close modal
+        closeModalButton.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Navigate to previous image
+        prevImageButton.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            modalImage.src = images[currentIndex].url;
+        });
+
+        // Navigate to next image
+        nextImageButton.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            modalImage.src = images[currentIndex].url;
+        });
+
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
